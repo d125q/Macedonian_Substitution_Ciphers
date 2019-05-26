@@ -1,0 +1,782 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     38857,        773]
+NotebookOptionsPosition[     38545,        757]
+NotebookOutlinePosition[     38879,        772]
+CellTagsIndexPosition[     38836,        769]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"Clear", " ", "the", " ", "environment"}], ",", " ", 
+    RowBox[{
+    "set", " ", "the", " ", "seed", " ", "for", " ", "reproducibility"}], ",",
+     " ", 
+    RowBox[{"and", " ", "initialize", " ", "the", " ", "alphabet", " ", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"we", "'"}], "ll", " ", "be", " ", "working", " ", "with", 
+        " ", "lowercase", " ", "letters"}], ")"}], "."}]}]}], " ", "*)"}], 
+  "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"ClearAll", "[", "\"\<Global`*\>\"", "]"}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"SeedRandom", "[", "17", "]"}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"alphabet", "=", 
+     RowBox[{
+     "Characters", "[", 
+      "\"\<\:0430\:0431\:0432\:0433\:0434\:0453\:0435\:0436\:0437\:0455\:0438\
+\:0458\:043a\:043b\:0459\:043c\:043d\:045a\:043e\:043f\:0440\:0441\:0442\:045c\
+\:0443\:0444\:0445\:0446\:0447\:045f\:0448\>\"", "]"}]}], ";"}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{
+     "Map", " ", "a", " ", "letter", " ", "to", " ", "an", " ", "integer", 
+      " ", "and", " ", "vice"}], "-", 
+     RowBox[{"versa", "."}]}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"ord", "[", 
+      RowBox[{"char_String", "/;", 
+       RowBox[{
+        RowBox[{"StringLength", "@", "char"}], "===", "1"}]}], "]"}], ":=", 
+     RowBox[{"First", "@", 
+      RowBox[{"First", "@", 
+       RowBox[{"Position", "[", 
+        RowBox[{"alphabet", ",", "char"}], "]"}]}]}]}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"char", "[", 
+     RowBox[{"ord_Integer", "/;", 
+      RowBox[{
+       RowBox[{"ord", "\[GreaterEqual]", "1"}], "\[And]", 
+       RowBox[{"ord", "\[LessEqual]", 
+        RowBox[{"Length", "@", "alphabet"}]}]}]}], "]"}], ":=", 
+    RowBox[{
+    "alphabet", "\[LeftDoubleBracket]", "ord", "\[RightDoubleBracket]"}]}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+    "Functions", " ", "for", " ", "handling", " ", "Macedonian", " ", 
+     RowBox[{"text", "."}]}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"With", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"lower", "=", 
+         RowBox[{
+         "Characters", "[", 
+          "\"\<\:0430\:0431\:0432\:0433\:0434\:0453\:0435\:0436\:0437\:0455\
+\:0438\:0458\:043a\:043b\:0459\:043c\:043d\:045a\:043e\:043f\:0440\:0441\:0442\
+\:045c\:0443\:0444\:0445\:0446\:0447\:045f\:0448\>\"", "]"}]}], ",", 
+        "\[IndentingNewLine]", 
+        RowBox[{"upper", "=", 
+         RowBox[{
+         "Characters", "[", 
+          "\"\<\:0410\:0411\:0412\:0413\:0414\:0403\:0415\:0416\:0417\:0426\
+\:0418\:0408\:041a\:041b\:0409\:041c\:041d\:040a\:041e\:041f\:0420\:0421\:0422\
+\:040c\:0423\:0424\:0425\:0426\:0427\:040f\:0428\>\"", "]"}]}]}], "}"}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"toLowerCase", "[", "string_String", "]"}], ":=", 
+        RowBox[{"StringReplace", "[", 
+         RowBox[{"string", ",", 
+          RowBox[{"Thread", "[", 
+           RowBox[{"upper", "\[Rule]", "lower"}], "]"}]}], "]"}]}], ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"toUpperCase", "[", "string_String", "]"}], ":=", 
+        RowBox[{"StringReplace", "[", 
+         RowBox[{"string", ",", 
+          RowBox[{"Thread", "[", 
+           RowBox[{"lower", "\[Rule]", "upper"}], "]"}]}], "]"}]}], ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"tidy", "[", "string_String", "]"}], ":=", 
+        RowBox[{"StringJoin", "@", 
+         RowBox[{"StringCases", "[", 
+          RowBox[{
+           RowBox[{"toLowerCase", "@", 
+            RowBox[{"StringReplace", "[", 
+             RowBox[{"string", ",", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{
+                 "\"\<\[CapitalEGrave]\>\"", "|", "\"\<\[EGrave]\>\"", "|", 
+                  "\"\<\:0400\>\"", "|", "\"\<\:0450\>\""}], "\[Rule]", 
+                 "\"\<e\>\""}], ",", 
+                RowBox[{
+                 RowBox[{"\"\<\:040d\>\"", "|", "\"\<\:045d\>\""}], 
+                 "\[Rule]", "\"\<\:0438\>\""}]}], "}"}]}], "]"}]}], ",", 
+           "alphabet"}], "]"}]}]}], ";"}]}], "\[IndentingNewLine]", "]"}], 
+    ";"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{"IO", " ", 
+     RowBox[{"stuff", "."}]}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"inputPlaintext", "=", 
+     RowBox[{"tidy", "@", 
+      RowBox[{"Import", "[", 
+       RowBox[{
+        RowBox[{"NotebookDirectory", "[", "]"}], "<>", 
+        "\"\<InputPlaintext.txt\>\""}], "]"}]}]}], ";"}], " ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"This", " ", "is", " ", "the", " ", "plaintext", " ", 
+     RowBox[{"we", "'"}], "ll", " ", 
+     RowBox[{"encrypt", "."}]}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"outputFilename", "=", 
+     RowBox[{
+      RowBox[{"NotebookDirectory", "[", "]"}], "<>", 
+      "\"\<OutputCiphertext.txt\>\""}]}], ";"}], " ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"This", " ", "is", " ", "the", " ", "filename", " ", "where", " ", 
+     RowBox[{"we", "'"}], "ll", " ", "store", " ", "the", " ", "encrypted", 
+     " ", 
+     RowBox[{"plaintext", "."}]}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"inputCiphertext", "=", 
+     RowBox[{"tidy", "@", 
+      RowBox[{"Import", "[", 
+       RowBox[{
+        RowBox[{"NotebookDirectory", "[", "]"}], "<>", 
+        "\"\<InputCiphertext.txt\>\""}], "]"}]}]}], ";"}], 
+   RowBox[{"(*", " ", 
+    RowBox[{"This", " ", "is", " ", "the", " ", "ciphertext", " ", 
+     RowBox[{"we", "'"}], "ll", " ", "try", " ", "to", " ", 
+     RowBox[{"decrypt", "."}]}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"corpus", "=", 
+     RowBox[{"tidy", "@", 
+      RowBox[{"Import", "[", 
+       RowBox[{
+        RowBox[{"NotebookDirectory", "[", "]"}], "<>", "\"\<Corpus.txt\>\""}],
+        "]"}]}]}], ";"}], " ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"Corpus", " ", "for", " ", "frequency", " ", 
+     RowBox[{"analysis", "."}]}], " ", "*)"}], "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{"Functions", " ", "for", " ", "encryption"}], ",", " ", 
+     "decryiption", ",", " ", 
+     RowBox[{"and", " ", "key", " ", 
+      RowBox[{"generation", "."}]}]}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"encrypt", "[", 
+      RowBox[{"plaintext_String", ",", "key_"}], "]"}], ":=", 
+     RowBox[{"StringReplace", "[", 
+      RowBox[{"plaintext", ",", "key"}], "]"}]}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"decrypt", "[", 
+      RowBox[{"ciphertext_String", ",", "key_"}], "]"}], ":=", 
+     RowBox[{"StringReplace", "[", 
+      RowBox[{"ciphertext", ",", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"#", "/.", 
+          RowBox[{
+           RowBox[{"(", 
+            RowBox[{"lhs_", "\[Rule]", "rhs_"}], ")"}], "\[RuleDelayed]", 
+           RowBox[{"(", 
+            RowBox[{"rhs", "\[Rule]", "lhs"}], ")"}]}]}], "&"}], "/@", 
+        "key"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"generateKey", "[", "]"}], ":=", 
+     RowBox[{"Thread", "[", 
+      RowBox[{"alphabet", "\[Rule]", 
+       RowBox[{"RandomSample", "[", "alphabet", "]"}]}], "]"}]}], ";"}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+    "Encrypt", " ", "the", " ", "input", " ", "plaintext", " ", "and", " ", 
+     "write", " ", "it", " ", 
+     RowBox[{"out", "."}]}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"key", "=", 
+         RowBox[{"generateKey", "[", "]"}]}], ",", 
+        RowBox[{"plaintext", "=", "inputPlaintext"}], ",", "ciphertext"}], 
+       "}"}], ",", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"ciphertext", "=", 
+        RowBox[{"encrypt", "[", 
+         RowBox[{"plaintext", ",", "key"}], "]"}]}], ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{"(*", " ", 
+        RowBox[{
+        "Make", " ", "sure", " ", "that", " ", "everything", " ", "went", " ",
+          "well", " ", "in", " ", "the", " ", 
+         RowBox[{"encryption", "."}]}], " ", "*)"}], "\[IndentingNewLine]", 
+       RowBox[{"On", "[", "Assert", "]"}], ";", "\[IndentingNewLine]", 
+       RowBox[{"Assert", "[", 
+        RowBox[{"plaintext", "===", 
+         RowBox[{"decrypt", "[", 
+          RowBox[{"ciphertext", ",", "key"}], "]"}]}], "]"}], ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{"Off", "[", "Assert", "]"}], ";", "\[IndentingNewLine]", 
+       RowBox[{"Export", "[", 
+        RowBox[{"outputFilename", ",", "ciphertext"}], "]"}], ";"}]}], 
+     "\[IndentingNewLine]", "]"}], ";"}], "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+    "Break", " ", "the", " ", "substitution", " ", "cipher", " ", "using", 
+     " ", "a", " ", "Markov", " ", "chain", " ", "Monte", " ", "Carlo", " ", 
+     RowBox[{"(", "MCMC", ")"}], " ", 
+     RowBox[{"method", "."}]}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"breakCiphertext", "[", 
+      RowBox[{"ciphertext_String", ",", 
+       RowBox[{"iterations_Integer", "?", "NonNegative"}], ",", 
+       RowBox[{"scalingParameter_", "/;", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"NumericQ", "[", "scalingParameter", "]"}], "\[And]", 
+          RowBox[{
+           RowBox[{"N", "@", "scalingParameter"}], ">", "0"}]}], ")"}]}]}], 
+      "]"}], ":=", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "guessInitialKey", ",", "tallyBigrams", ",", "computeLogScore", ",", 
+         "swapRules", ",", "referenceTally", ",", "currentKey", ",", 
+         "currentCiphertext", ",", "currentLogScore", ",", "bestCiphertext", 
+         ",", "bestLogScore", ",", "proposal", ",", "proposedKey", ",", 
+         "proposedCiphertext", ",", "proposedLogScore"}], "}"}], ",", 
+       "\[IndentingNewLine]", "\[IndentingNewLine]", 
+       RowBox[{"(*", " ", 
+        RowBox[{
+        "Guess", " ", "the", " ", "initial", " ", "key", " ", "according", 
+         " ", "to", " ", "unigram", " ", 
+         RowBox[{"frequencies", "."}]}], " ", "*)"}], "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"guessInitialKey", "[", "]"}], ":=", 
+            RowBox[{"Module", "[", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{
+               "sortUnigrams", ",", "ciphertextUnigrams", ",", 
+                "corpusUnigrams"}], "}"}], ",", "\[IndentingNewLine]", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"sortUnigrams", "[", "text_String", "]"}], ":=", 
+                RowBox[{"First", "/@", 
+                 RowBox[{"Sort", "[", 
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{"#", "/.", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"unigram_String", ",", "count_Integer"}], "}"}], 
+                    "\[RuleDelayed]", 
+                    RowBox[{"{", 
+                    RowBox[{"unigram", ",", 
+                    RowBox[{"N", "[", 
+                    RowBox[{"count", "/", 
+                    RowBox[{"StringLength", "@", "text"}]}], "]"}]}], 
+                    "}"}]}]}], "&"}], "/@", 
+                    RowBox[{"Tally", "@", 
+                    RowBox[{"Characters", "@", "text"}]}]}], ",", 
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    "#1", "\[LeftDoubleBracket]", "2", 
+                    "\[RightDoubleBracket]"}], ">", 
+                    RowBox[{
+                    "#2", "\[LeftDoubleBracket]", "2", 
+                    "\[RightDoubleBracket]"}]}], "&"}]}], "]"}]}]}], ";", 
+               "\[IndentingNewLine]", 
+               RowBox[{"ciphertextUnigrams", "=", 
+                RowBox[{"sortUnigrams", "[", "ciphertext", "]"}]}], ";", 
+               "\[IndentingNewLine]", 
+               RowBox[{"corpusUnigrams", "=", 
+                RowBox[{"sortUnigrams", "[", "corpus", "]"}]}], ";", 
+               "\[IndentingNewLine]", 
+               RowBox[{"(*", " ", 
+                RowBox[{
+                "It", " ", "cannot", " ", "be", " ", "the", " ", "case", " ", 
+                 "that", " ", "we", " ", "found", " ", "more", " ", 
+                 "distinct", " ", "letters", " ", "in", " ", "the", " ", 
+                 "ciphertext", " ", "than", " ", "there", " ", "were", " ", 
+                 "in", " ", "the", " ", 
+                 RowBox[{"corpus", "."}]}], " ", "*)"}], 
+               "\[IndentingNewLine]", 
+               RowBox[{"On", "[", "Assert", "]"}], ";", "\[IndentingNewLine]", 
+               RowBox[{"Assert", "[", 
+                RowBox[{
+                 RowBox[{"Length", "@", "ciphertextUnigrams"}], 
+                 "\[LessEqual]", 
+                 RowBox[{"Length", "@", "corpusUnigrams"}]}], "]"}], ";", 
+               "\[IndentingNewLine]", 
+               RowBox[{"Off", "[", "Assert", "]"}], ";", 
+               "\[IndentingNewLine]", 
+               RowBox[{"(*", " ", 
+                RowBox[{"Construct", " ", "the", " ", 
+                 RowBox[{"key", "."}]}], " ", "*)"}], "\[IndentingNewLine]", 
+               RowBox[{"Thread", "[", 
+                RowBox[{
+                 RowBox[{"Take", "[", 
+                  RowBox[{"corpusUnigrams", ",", 
+                   RowBox[{"Length", "@", "ciphertextUnigrams"}]}], "]"}], 
+                 "\[Rule]", "ciphertextUnigrams"}], "]"}]}]}], 
+             "\[IndentingNewLine]", "]"}]}], ";", "\[IndentingNewLine]", 
+           "\[IndentingNewLine]", 
+           RowBox[{"(*", " ", 
+            RowBox[{"Tally", " ", "bigram", " ", 
+             RowBox[{"frequencies", ".", "  ", "We"}], " ", "add", " ", "1", 
+             " ", "to", " ", "each", " ", "tally", " ", "in", " ", "order", 
+             " ", "for", " ", "the", " ", "underlying", " ", "Markov", " ", 
+             "chain", " ", "to", " ", "be", " ", 
+             RowBox[{"irreducible", "."}]}], " ", "*)"}], 
+           "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"tallyBigrams", "[", "text_String", "]"}], ":=", 
+            RowBox[{"Module", "[", 
+             RowBox[{
+              RowBox[{"{", "result", "}"}], ",", "\[IndentingNewLine]", 
+              RowBox[{
+               RowBox[{"result", "=", 
+                RowBox[{"Table", "[", 
+                 RowBox[{"1", ",", 
+                  RowBox[{"{", 
+                   RowBox[{"i", ",", "1", ",", 
+                    RowBox[{"Length", "@", "alphabet"}]}], "}"}], ",", 
+                  RowBox[{"{", 
+                   RowBox[{"j", ",", "1", ",", 
+                    RowBox[{"Length", "@", "alphabet"}]}], "}"}]}], "]"}]}], 
+               ";", "\[IndentingNewLine]", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"result", "\[LeftDoubleBracket]", 
+                    RowBox[{
+                    RowBox[{"ord", "@", 
+                    RowBox[{"#", "\[LeftDoubleBracket]", 
+                    RowBox[{"1", ",", "1"}], "\[RightDoubleBracket]"}]}], ",", 
+                    RowBox[{"ord", "@", 
+                    RowBox[{"#", "\[LeftDoubleBracket]", 
+                    RowBox[{"1", ",", "2"}], "\[RightDoubleBracket]"}]}]}], 
+                    "\[RightDoubleBracket]"}], "=", 
+                   RowBox[{
+                   "#", "\[LeftDoubleBracket]", "2", 
+                    "\[RightDoubleBracket]"}]}], ")"}], "&"}], "/@", 
+                RowBox[{"Tally", "@", 
+                 RowBox[{"Partition", "[", 
+                  RowBox[{
+                   RowBox[{"Characters", "@", "text"}], ",", "2", ",", "1"}], 
+                  "]"}]}]}], ";", "\[IndentingNewLine]", 
+               RowBox[{
+                RowBox[{"Function", "[", 
+                 RowBox[{"row", ",", 
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"#", "/", 
+                    RowBox[{"Plus", "@@", "row"}]}], "&"}], "/@", "row"}]}], 
+                 "]"}], "/@", "result"}]}]}], "\[IndentingNewLine]", "]"}]}], 
+           ";", "\[IndentingNewLine]", 
+           RowBox[{"referenceTally", "=", 
+            RowBox[{"tallyBigrams", "[", "corpus", "]"}]}], ";", 
+           "\[IndentingNewLine]", "\[IndentingNewLine]", 
+           RowBox[{"(*", " ", 
+            RowBox[{
+            "Compute", " ", "the", " ", "log", " ", "score", " ", "of", " ", 
+             "a", " ", "text", " ", "with", " ", "respect", " ", "to", " ", 
+             "the", " ", "reference", " ", 
+             RowBox[{"tally", "."}]}], " ", "*)"}], "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"computeLogScore", "[", "text_String", "]"}], ":=", 
+            "\[IndentingNewLine]", 
+            RowBox[{"Plus", "@@", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"N", "@", 
+                 RowBox[{"Log", "[", 
+                  RowBox[{"referenceTally", "\[LeftDoubleBracket]", 
+                   RowBox[{
+                    RowBox[{"ord", "@", 
+                    RowBox[{
+                    "#", "\[LeftDoubleBracket]", "1", 
+                    "\[RightDoubleBracket]"}]}], ",", 
+                    RowBox[{"ord", "@", 
+                    RowBox[{
+                    "#", "\[LeftDoubleBracket]", "2", 
+                    "\[RightDoubleBracket]"}]}]}], "\[RightDoubleBracket]"}], 
+                  "]"}]}], "&"}], "/@", 
+               RowBox[{"Partition", "[", 
+                RowBox[{
+                 RowBox[{"Characters", "@", "text"}], ",", "2", ",", "1"}], 
+                "]"}]}], ")"}]}]}], ";", "\[IndentingNewLine]", 
+           "\[IndentingNewLine]", 
+           RowBox[{"(*", " ", 
+            RowBox[{"Swap", " ", "the", " ", 
+             RowBox[{"LHS", "'"}], "s", " ", "of", " ", "two", " ", 
+             RowBox[{"rules", ".", "  ", "We"}], " ", "allow", " ", 
+             "\"\<swapping\>\"", " ", "of", " ", "the", " ", "same", " ", 
+             RowBox[{"LHS", "'"}], "s", " ", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"i", ".", "e", ".", " ", "not"}], " ", "changing", " ",
+                "anything"}], ")"}], " ", "in", " ", "order", " ", "for", " ",
+              "the", " ", "underlying", " ", "Markov", " ", "chain", " ", 
+             "to", " ", "be", " ", 
+             RowBox[{"aperiodic", "."}]}], " ", "*)"}], "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"swapRules", "[", 
+              RowBox[{"rules_List", ",", 
+               RowBox[{"i_Integer", "?", "Positive"}], ",", 
+               RowBox[{"j_Integer", "?", "Positive"}]}], "]"}], "/;", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"i", "\[LessEqual]", 
+                RowBox[{"Length", "@", "rules"}]}], "\[And]", 
+               RowBox[{"j", "\[LessEqual]", 
+                RowBox[{"Length", "@", "rules"}]}]}], ")"}]}], ":=", 
+            RowBox[{"ReplacePart", "[", 
+             RowBox[{"rules", ",", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{"i", ",", "1"}], "}"}], "\[Rule]", 
+                 RowBox[{"rules", "[", 
+                  RowBox[{"[", 
+                   RowBox[{"j", ",", "1"}], "]"}], "]"}]}], ",", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{"j", ",", "1"}], "}"}], "\[Rule]", 
+                 RowBox[{"rules", "[", 
+                  RowBox[{"[", 
+                   RowBox[{"i", ",", "1"}], "]"}], "]"}]}]}], "}"}]}], 
+             "]"}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+           RowBox[{"(*", " ", 
+            RowBox[{"Run", " ", "the", " ", 
+             RowBox[{"MCMC", "."}]}], " ", "*)"}], "\[IndentingNewLine]", 
+           RowBox[{"currentKey", "=", 
+            RowBox[{"guessInitialKey", "[", "]"}]}], ";", 
+           "\[IndentingNewLine]", 
+           RowBox[{"currentCiphertext", "=", 
+            RowBox[{"decrypt", "[", 
+             RowBox[{"ciphertext", ",", "currentKey"}], "]"}]}], ";", 
+           "\[IndentingNewLine]", 
+           RowBox[{"currentLogScore", "=", 
+            RowBox[{"computeLogScore", "[", "currentCiphertext", "]"}]}], ";",
+            "\[IndentingNewLine]", 
+           RowBox[{"bestCiphertext", "=", "currentCiphertext"}], ";", 
+           "\[IndentingNewLine]", 
+           RowBox[{"bestLogScore", "=", "currentLogScore"}], ";"}], ")"}], 
+         "\[IndentingNewLine]", "\[IndentingNewLine]", 
+         RowBox[{"Do", "[", "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"proposal", "=", 
+             RowBox[{"RandomSample", "[", 
+              RowBox[{
+               RowBox[{"Range", "[", 
+                RowBox[{"Length", "@", "currentKey"}], "]"}], ",", "2"}], 
+              "]"}]}], ";", "\[IndentingNewLine]", 
+            RowBox[{"proposedKey", "=", 
+             RowBox[{"swapRules", "[", 
+              RowBox[{"currentKey", ",", 
+               RowBox[{
+               "proposal", "\[LeftDoubleBracket]", "1", 
+                "\[RightDoubleBracket]"}], ",", 
+               RowBox[{
+               "proposal", "\[LeftDoubleBracket]", "2", 
+                "\[RightDoubleBracket]"}]}], "]"}]}], ";", 
+            "\[IndentingNewLine]", 
+            RowBox[{"proposedCiphertext", "=", 
+             RowBox[{"decrypt", "[", 
+              RowBox[{"ciphertext", ",", "proposedKey"}], "]"}]}], ";", 
+            "\[IndentingNewLine]", 
+            RowBox[{"proposedLogScore", "=", 
+             RowBox[{"computeLogScore", "[", "proposedCiphertext", "]"}]}], 
+            ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+            RowBox[{"If", "[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"RandomReal", "[", "]"}], "\[LessEqual]", 
+               SuperscriptBox[
+                RowBox[{"Exp", "[", 
+                 RowBox[{"proposedLogScore", "-", "currentLogScore"}], "]"}], 
+                
+                RowBox[{"N", "@", "scalingParameter"}]]}], ",", 
+              "\[IndentingNewLine]", 
+              RowBox[{"(*", " ", 
+               RowBox[{"Accept", " ", "the", " ", 
+                RowBox[{"proposal", "."}]}], " ", "*)"}], 
+              "\[IndentingNewLine]", 
+              RowBox[{
+               RowBox[{"currentKey", "=", "proposedKey"}], ";", 
+               "\[IndentingNewLine]", 
+               RowBox[{"currentCiphertext", "=", "proposedCiphertext"}], ";", 
+               "\[IndentingNewLine]", 
+               RowBox[{"currentLogScore", "=", "proposedLogScore"}], ";", 
+               "\[IndentingNewLine]", "\[IndentingNewLine]", 
+               RowBox[{"If", "[", 
+                RowBox[{
+                 RowBox[{"bestLogScore", "<", "currentLogScore"}], ",", 
+                 RowBox[{"(*", " ", 
+                  RowBox[{
+                  "Update", " ", "the", " ", "maximum", " ", "if", " ", 
+                   RowBox[{"needed", "."}]}], " ", "*)"}], 
+                 "\[IndentingNewLine]", 
+                 RowBox[{
+                  RowBox[{"bestLogScore", "=", "currentLogScore"}], ";", 
+                  "\[IndentingNewLine]", 
+                  RowBox[{"bestCiphertext", "=", "currentCiphertext"}], 
+                  ";"}]}], "\[IndentingNewLine]", "]"}], ";"}]}], 
+             "\[IndentingNewLine]", "]"}], ";"}], ",", "\[IndentingNewLine]", 
+           "iterations"}], "]"}]}], ";", "\[IndentingNewLine]", 
+        "\[IndentingNewLine]", 
+        RowBox[{"(*", " ", 
+         RowBox[{"Return", " ", "the", " ", "best", " ", 
+          RowBox[{"ciphertext", "."}]}], " ", "*)"}], "\[IndentingNewLine]", 
+        "bestCiphertext"}]}], "\[IndentingNewLine]", "]"}]}], ";"}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{"Try", " ", "to", " ", "break", " ", "the", " ", 
+     RowBox[{"thing", "."}]}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{"breakCiphertext", "[", 
+    RowBox[{"inputCiphertext", ",", "5000", ",", "1"}], "]"}]}]}]], "Input",
+ CellChangeTimes->{{3.653945534696505*^9, 3.653945583353148*^9}, {
+   3.653945775920908*^9, 3.653946077129616*^9}, {3.653946141584857*^9, 
+   3.65394615024821*^9}, {3.6539462156159153`*^9, 3.6539463094077587`*^9}, {
+   3.653946342151844*^9, 3.6539464106399097`*^9}, {3.6539464421281433`*^9, 
+   3.6539464423196077`*^9}, {3.65394648499934*^9, 3.653946514519146*^9}, {
+   3.653946550343197*^9, 3.65394655753511*^9}, {3.6539466274658203`*^9, 
+   3.6539466570946283`*^9}, {3.6539466921454487`*^9, 3.653946714302636*^9}, {
+   3.6539467447508373`*^9, 3.653946831230188*^9}, {3.653946893421853*^9, 
+   3.653947047405717*^9}, {3.653947088973701*^9, 3.653947167444611*^9}, {
+   3.653947221141231*^9, 3.6539472245961113`*^9}, {3.653947300855616*^9, 
+   3.653947305452613*^9}, {3.653947348004211*^9, 3.653947742915255*^9}, {
+   3.653947783363283*^9, 3.6539477856589622`*^9}, {3.653947820867477*^9, 
+   3.653947945043016*^9}, {3.653948050930564*^9, 3.653948099633691*^9}, {
+   3.653948155449737*^9, 3.6539482254920073`*^9}, {3.653948294965464*^9, 
+   3.653948324338769*^9}, {3.653948665672159*^9, 3.6539488667831087`*^9}, {
+   3.6539489100078573`*^9, 3.653949029478096*^9}, {3.653949215909278*^9, 
+   3.6539492218932247`*^9}, 3.653949621948449*^9, {3.6539496553720207`*^9, 
+   3.653949739732099*^9}, {3.65394978305973*^9, 3.653949851698226*^9}, {
+   3.653950194553368*^9, 3.653950324384369*^9}, {3.6539722674996147`*^9, 
+   3.653972267955126*^9}, {3.653972316989489*^9, 3.653972324764949*^9}, {
+   3.653972368262618*^9, 3.653972417816189*^9}, {3.653972471266364*^9, 
+   3.653972503378827*^9}, {3.653972649976164*^9, 3.653972654055648*^9}, {
+   3.654004894547914*^9, 3.654005074589921*^9}, {3.654005193893808*^9, 
+   3.6540052151004047`*^9}, {3.654005246166601*^9, 3.654005287420032*^9}, {
+   3.654005318083849*^9, 3.6540053659465437`*^9}, {3.654005440372266*^9, 
+   3.654005441705805*^9}, {3.654005500905635*^9, 3.6540055026331873`*^9}, {
+   3.6540078993827543`*^9, 3.654007899815011*^9}, {3.654007954840969*^9, 
+   3.654007976874861*^9}, {3.654008289329946*^9, 3.654008362931398*^9}, {
+   3.6540091167370157`*^9, 3.6540092054732733`*^9}, {3.654009405544701*^9, 
+   3.654009405880892*^9}, {3.654009441577076*^9, 3.654009441945072*^9}, {
+   3.654009480617573*^9, 3.654009626905904*^9}, {3.6540096812193203`*^9, 
+   3.654009693441181*^9}, {3.654010443103572*^9, 3.654010631213966*^9}, {
+   3.654010956018649*^9, 3.654011013699069*^9}, {3.654011101282102*^9, 
+   3.654011133809963*^9}, {3.6540111848733177`*^9, 3.654011373816511*^9}, {
+   3.6540114120243387`*^9, 3.6540114471921988`*^9}, {3.654011497000401*^9, 
+   3.6540117325583963`*^9}, {3.654011802838382*^9, 3.6540118803984547`*^9}, {
+   3.6540119860472717`*^9, 3.6540121128532963`*^9}, 3.654012176383831*^9, {
+   3.65401248942734*^9, 3.654012559451158*^9}, {3.654012613739551*^9, 
+   3.654012620596339*^9}, {3.65401266073172*^9, 3.654012670626699*^9}, {
+   3.6540127088352737`*^9, 3.6540127093546762`*^9}, {3.654013826869521*^9, 
+   3.654013904685924*^9}, {3.654013940836693*^9, 3.654014025428198*^9}, {
+   3.654014108700119*^9, 3.6540141106287394`*^9}, {3.654014148812504*^9, 
+   3.654014447738912*^9}, {3.6540145094595346`*^9, 3.65401451203484*^9}, {
+   3.6540145539389353`*^9, 3.65401459160935*^9}, {3.65401465272199*^9, 
+   3.6540146534089746`*^9}, {3.6540148206811743`*^9, 
+   3.6540148395690737`*^9}, {3.654018627871459*^9, 3.6540186341825857`*^9}, {
+   3.654018664254755*^9, 3.654018707742463*^9}, {3.654019676031826*^9, 
+   3.654019699311879*^9}, {3.654019760471139*^9, 3.654019760902364*^9}, {
+   3.6540203171865673`*^9, 3.654020317498272*^9}, {3.654020462915484*^9, 
+   3.654020467114953*^9}, 3.654021621035132*^9, 3.654021786856701*^9, {
+   3.654023135071848*^9, 3.654023147159708*^9}, {3.654023249999462*^9, 
+   3.654023282072994*^9}, {3.6540233893015947`*^9, 3.6540233898694153`*^9}, {
+   3.654023548677853*^9, 3.654023550759413*^9}, {3.654023755147407*^9, 
+   3.6540237682118683`*^9}, {3.654023838677949*^9, 3.654023839244545*^9}, {
+   3.654024536750554*^9, 3.654024588638514*^9}, {3.6540254608095016`*^9, 
+   3.654025463884479*^9}, {3.654080246935882*^9, 3.65408028093612*^9}, {
+   3.6540803111274223`*^9, 3.65408038576755*^9}, {3.654081295552054*^9, 
+   3.654081387764331*^9}, {3.654081435073965*^9, 3.654081464079782*^9}, {
+   3.654083052458885*^9, 3.6540830683919563`*^9}, {3.6540852701701813`*^9, 
+   3.654085317361266*^9}}],
+
+Cell[BoxData["\<\"\:0436\:0443\:043c\:0430\:043d\:0438\:0437\:043c\:043e\:0442\
+\:0435\:0438\:0434\:0435\:043e\:043b\:043e\:0433\:0438\:0458\:0430\:043d\:0430\
+\:0440\:0435\:043d\:0435\:0441\:0430\:043d\:0441\:0430\:0442\:0430\:0442\:043e\
+\:0458\:0435\:043d\:0435\:0458\:0437\:0438\:043d\:0430\:0444\:0438\:043b\:043e\
+\:0437\:043e\:0444\:0438\:0458\:0430\:043d\:0435\:0458\:0437\:0438\:043d\:0438\
+\:043e\:0442\:043f\:043e\:0433\:043b\:0435\:0434\:043d\:0430\:0441\:0432\:0435\
+\:0442\:043e\:0442\:0436\:0443\:043c\:0430\:043d\:0438\:0437\:043c\:043e\:0442\
+\:043d\:0430\:0458\:043f\:0440\:0432\:0438\:043d\:0441\:0435\:043f\:043e\:0458\
+\:0430\:0432\:0438\:043b\:0432\:043e\:0438\:0442\:0430\:043b\:0438\:0458\:0430\
+\:0432\:043e\:0432\:0435\:043a\:0430\:0431\:043b\:0438\:0437\:0443\:0432\:0435\
+\:043a\:0430\:043f\:043e\:0434\:043e\:0445\:043d\:0430\:0432\:043e\:0448\:043f\
+\:0430\:043d\:0438\:0458\:0430\:0444\:0440\:0430\:043d\:0445\:0438\:0458\:0430\
+\:0430\:043d\:0433\:043b\:0438\:0458\:0430\:0438\:0434\:0440\:0443\:0433\:0438\
+\:0435\:0432\:0440\:043e\:043f\:0441\:043a\:0438\:0437\:0435\:043c\:0458\:0438\
+\:0438\:0434\:0435\:043e\:043b\:043e\:0437\:0438\:043d\:0430\:0440\:0435\:043d\
+\:0435\:0441\:0430\:043d\:0441\:0430\:0442\:0430\:0431\:0438\:043b\:0435\:0436\
+\:0443\:043c\:0430\:043d\:0438\:0441\:0442\:0438\:0442\:0435\:0442\:0438\:0435\
+\:043d\:0430\:0441\:0432\:043e\:0438\:0442\:0435\:0441\:043e\:0432\:0440\:0435\
+\:043c\:0435\:043d\:0438\:0445\:0438\:0438\:043c\:043f\:043e\:043d\:0443\:0434\
+\:0438\:043b\:0435\:043d\:043e\:0432\:043f\:043e\:0433\:043b\:0435\:0434\:043d\
+\:0430\:0441\:0432\:0435\:0442\:043e\:0442\:0440\:0435\:043b\:0438\:0433\:0438\
+\:043e\:0437\:043d\:0438\:043e\:0442\:043f\:043e\:0433\:043b\:0435\:0434\:043d\
+\:0430\:0441\:0432\:0435\:0442\:043e\:0442\:0433\:043e\:0437\:0430\:043c\:0435\
+\:043d\:0438\:043b\:0435\:0441\:043e\:0441\:0432\:0435\:0442\:043e\:0432\:0435\
+\:043d\:0433\:0440\:0430\:0433\:0430\:043d\:0441\:043a\:0438\:0441\:043f\:043e\
+\:0440\:0435\:0434\:043d\:0438\:0432\:0447\:043e\:0432\:0435\:043a\:043e\:0442\
+\:0435\:0442\:043e\:0458\:0432\:043e\:043a\:043e\:0433\:043e\:0442\:0440\:0435\
+\:0431\:0430\:0434\:0430\:0441\:0435\:0432\:0435\:0440\:0443\:0432\:0430\:0430\
+\:043d\:0435\:0432\:043e\:043d\:0430\:0434\:043f\:0440\:0438\:0440\:043e\:0434\
+\:043d\:0438\:0441\:0443\:0448\:0442\:0435\:0441\:0442\:0432\:0430\:0431\:0438\
+\:0434\:0435\:0458\:045c\:0438\:0441\:0435\:0448\:0442\:043e\:0435\:0438\:0437\
+\:0433\:0440\:0430\:0434\:0435\:043d\:043e\:043d\:0430\:0437\:0435\:043c\:0458\
+\:0430\:0442\:0430\:0435\:0434\:0435\:043b\:043e\:043d\:0430\:043d\:0435\:0433\
+\:043e\:0432\:0438\:0442\:0435\:0442\:0432\:043e\:0440\:0435\:0447\:043a\:0438\
+\:0441\:043f\:043e\:0441\:043e\:0431\:043d\:043e\:0441\:0442\:0438\:0437\:0430\
+\:0447\:043e\:0432\:0435\:043a\:043e\:0442\:043d\:0435\:043f\:043e\:0441\:0442\
+\:043e\:0438\:0434\:0440\:0443\:0433\:0446\:0438\:0432\:043e\:0442\:043e\:0441\
+\:0432\:0435\:043d\:043e\:0432\:043e\:0458\:043d\:0430\:0437\:0435\:043c\:0458\
+\:0430\:0442\:0430\:0438\:0437\:0430\:0442\:043e\:0430\:0437\:0435\:043c\:0441\
+\:043a\:0438\:043e\:0442\:0446\:0438\:0432\:043e\:0442\:043d\:0435\:0442\:0440\
+\:0435\:0431\:0430\:0434\:0430\:0441\:0435\:043f\:0440\:0435\:0437\:0440\:0435\
+\:043a\:0430\:043a\:043e\:0448\:0442\:043e\:043f\:0440\:043e\:043f\:043e\:0432\
+\:0435\:0434\:0430\:043b\:0430\:0445\:0440\:043a\:0432\:0430\:0442\:0430\:0442\
+\:0443\:043a\:0443\:0442\:0440\:0435\:0431\:0430\:0434\:0430\:0441\:0435\:043f\
+\:043e\:0447\:0438\:0442\:0443\:0432\:0430\:0438\:0443\:043d\:0430\:043f\:0440\
+\:0435\:0434\:0443\:0432\:0430\:0432\:0435\:0447\:0435\:043d\:0446\:0438\:0432\
+\:043e\:0442\:043d\:0435\:043f\:043e\:0441\:0442\:043e\:0438\:0438\:0435\:043d\
+\:0435\:043f\:0440\:0438\:0444\:0430\:0442\:043b\:0438\:0432\:0430\:0434\:043e\
+\:0433\:043c\:0430\:0442\:0430\:0434\:0435\:043a\:0430\:0447\:043e\:0432\:0435\
+\:043a\:043e\:0442\:0442\:0440\:0435\:0431\:0430\:0434\:0430\:0441\:0435\:043e\
+\:0434\:043a\:0430\:0446\:0435\:043e\:0434\:0441\:0438\:0442\:0435\:0431\:043b\
+\:0430\:0433\:043e\:0434\:0430\:0442\:0438\:043d\:0430\:0437\:0435\:043c\:0441\
+\:043a\:0438\:043e\:0442\:0446\:0438\:0432\:043e\:0442\:0437\:0430\:0434\:0430\
+\:0446\:0438\:0432\:0435\:0435\:0432\:0435\:0447\:043d\:043e\:0432\:043e\:0438\
+\:0437\:043c\:0438\:0441\:043b\:0435\:043d\:0438\:043e\:0442\:0437\:0430\:0434\
+\:0433\:0440\:043e\:0431\:0435\:043d\:0446\:0438\:0432\:043e\:0442\:0437\:0430\
+\:043c\:0438\:0441\:043b\:0435\:043d\:043a\:0430\:043a\:043e\:043f\:0435\:043a\
+\:043e\:043b\:0447\:0438\:0441\:0442\:0438\:043b\:0438\:0448\:0442\:0435\:0438\
+\:0440\:0430\:0458\:0441\:043f\:043e\:0440\:0435\:0434\:0436\:0443\:043c\:0430\
+\:043d\:0438\:0441\:0442\:0438\:0442\:0435\:0441\:043c\:0438\:0441\:043b\:0430\
+\:0442\:0430\:043d\:0430\:043f\:043e\:0441\:0442\:043e\:0435\:045a\:0435\:0442\
+\:043e\:0435\:043e\:0432\:0434\:0435\:043d\:0430\:0437\:0435\:043c\:0458\:0430\
+\:0442\:0430\:0438\:0447\:043e\:0432\:0435\:043a\:043e\:0442\:0435\:043d\:0435\
+\:0458\:0437\:0438\:043d\:043e\:0442\:043e\:043d\:0430\:0458\:0441\:043e\:0432\
+\:0440\:0448\:0435\:043d\:043e\:0441\:0443\:0448\:0442\:0435\:0441\:0442\:0432\
+\:043e\:043f\:043e\:0442\:043a\:0440\:0435\:043f\:0430\:0437\:0430\:043e\:0432\
+\:0438\:0435\:0441\:0432\:0430\:045c\:0430\:045a\:0430\:0436\:0443\:043c\:0430\
+\:043d\:0438\:0441\:0442\:0438\:0442\:0435\:043d\:0430\:043e\:0453\:0430\:043b\
+\:0435\:0432\:043e\:0430\:043d\:0442\:0438\:0447\:043a\:0430\:0442\:0430\:043d\
+\:0430\:0443\:043a\:0430\:043b\:0438\:0442\:0430\:0440\:0430\:0442\:0443\:0440\
+\:0430\:0441\:043a\:0443\:043b\:043f\:0442\:0443\:0440\:0430\:0438\:0430\:0440\
+\:0436\:0438\:0442\:0435\:043a\:0442\:0443\:0440\:0430\:043f\:0440\:0435\:043a\
+\:0443\:043a\:043e\:0438\:043e\:0442\:043a\:0440\:0438\:043b\:0435\:0434\:0440\
+\:0443\:0433\:0438\:0432\:0438\:0441\:0442\:0438\:043d\:0438\:0437\:0430\:0446\
+\:0438\:0432\:043e\:0442\:043e\:0442\:043f\:043e\:0438\:043d\:0430\:043a\:0432\
+\:0438\:043e\:0434\:0441\:0440\:0435\:0434\:043d\:043e\:0432\:0435\:043a\:043e\
+\:0432\:043d\:0438\:0442\:0435\:043d\:0435\:043a\:043e\:0438\:043e\:0434\:0436\
+\:0443\:043c\:0430\:043d\:0438\:0441\:0442\:0438\:0442\:0435\:0441\:0432\:043e\
+\:0438\:0442\:0435\:0434\:0435\:043b\:0430\:0433\:0438\:043f\:0438\:0448\:0443\
+\:0432\:0430\:043b\:0435\:043d\:0430\:043b\:0430\:0442\:0438\:043d\:0441\:043a\
+\:0438\:043e\:0442\:043c\:0440\:0442\:043e\:0432\:0458\:0430\:0437\:0438\:043a\
+\:0438\:043d\:0438\:0432\:043d\:0438\:0442\:0435\:0434\:0435\:043b\:0430\:0434\
+\:0430\:0431\:0438\:0434\:0430\:0442\:0434\:043e\:0441\:0442\:0430\:043f\:043d\
+\:0438\:0437\:0430\:0448\:0438\:0440\:043e\:043a\:043a\:0440\:0443\:0433\:043b\
+\:0443\:0453\:0435\:0437\:0430\:0436\:0443\:043c\:0430\:043d\:0438\:0441\:0442\
+\:0438\:0442\:0435\:043f\:043e\:0438\:043c\:043e\:0442\:0436\:0443\:043c\:0430\
+\:043d\:0438\:0437\:0430\:043c\:0437\:043d\:0430\:0447\:0435\:043b\:043e\:0430\
+\:0444\:0440\:0438\:043c\:0430\:0445\:0438\:0458\:0430\:0438\:0441\:043b\:043e\
+\:0431\:043e\:0434\:0430\:043d\:0430\:0447\:043e\:0432\:0435\:043a\:043e\:0432\
+\:0430\:0442\:0430\:043b\:0438\:0447\:043d\:043e\:0441\:0442\:0440\:0430\:0437\
+\:0432\:0438\:0442\:043e\:043a\:043e\:0442\:043d\:0430\:043b\:0438\:0442\:0435\
+\:0440\:0430\:0442\:0443\:0440\:0430\:0442\:0430\:0432\:043e\:0435\:043f\:043e\
+\:0436\:0430\:0442\:0430\:043d\:0430\:0440\:0435\:043d\:0435\:0441\:0430\:043d\
+\:0441\:0430\:0442\:0430\:043f\:043e\:043c\:0438\:043d\:0443\:0432\:0430\:043d\
+\:0438\:0437\:0442\:0440\:0438\:0444\:0430\:0437\:0438\:0448\:0442\:043e\:0433\
+\:0438\:043e\:0431\:0435\:0434\:0438\:043d\:0443\:0432\:0430\:0435\:0434\:043d\
+\:0430\:0436\:0443\:043c\:0430\:043d\:0438\:0441\:0442\:0438\:0447\:043a\:0430\
+\:043a\:043e\:043d\:0445\:0435\:043f\:0445\:0438\:0458\:0430\:0434\:0430\:0441\
+\:0435\:043f\:0438\:0448\:0443\:0432\:0430\:0437\:0430\:0447\:043e\:0432\:0435\
+\:043a\:043e\:0442\:0442\:0438\:0435\:0441\:0435\:0440\:0430\:043d\:0430\:0440\
+\:0435\:043d\:0435\:0441\:0430\:043d\:0441\:0430\:0432\:0438\:0441\:043e\:043a\
+\:0430\:0440\:0435\:043d\:0435\:0441\:0430\:043d\:0441\:0430\:0438\:0434\:043e\
+\:0445\:043d\:0430\:0440\:0435\:043d\:0435\:0441\:0430\:043d\:0441\:0430\:0437\
+\:0430\:0440\:0430\:043d\:0430\:0442\:0430\:0440\:0435\:043d\:0435\:0441\:0430\
+\:043d\:0441\:0430\:043a\:0430\:0440\:0430\:043a\:0442\:0435\:0440\:0438\:0441\
+\:0442\:0438\:0447\:0435\:043d\:0435\:0441\:043c\:0435\:0448\:043d\:0438\:043e\
+\:0442\:0440\:0430\:0441\:043a\:0430\:0437\:0441\:043e\:0430\:043d\:0442\:0438\
+\:043a\:043b\:0435\:0440\:0438\:043a\:0430\:043b\:043d\:0430\:0438\:0430\:043d\
+\:0442\:0438\:0444\:0435\:0443\:0434\:0430\:043b\:043d\:0430\:043d\:0430\:0441\
+\:043e\:0447\:0435\:043d\:043e\:0441\:0442\:045f\:0431\:043e\:043a\:0430\:0447\
+\:043e\:0434\:0435\:043a\:0430\:043c\:0435\:0440\:043e\:043d\"\>"], "Output",
+ CellChangeTimes->{3.6540854204279623`*^9, 3.654102797640176*^9}]
+}, Open  ]]
+},
+WindowSize->{1920, 1058},
+WindowMargins->{{0, Automatic}, {0, Automatic}},
+FrontEndVersion->"10.2 for Linux x86 (64-bit) (July 29, 2015)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 29003, 619, 1892, "Input"],
+Cell[29586, 643, 8943, 111, 148, "Output"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
